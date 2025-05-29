@@ -1,5 +1,9 @@
+import 'package:duitku/models/category.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/category_service.dart';
 
 
 class CategoryPage extends StatefulWidget {
@@ -11,6 +15,25 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   bool isExpanded = true;
+  final SupabaseClient client = Supabase.instance.client;
+  final categoryService = CategoryService();
+  TextEditingController categorynameController = TextEditingController();
+  
+  Future insert(String name, int type) async {
+  final now = DateTime.now().toIso8601String();
+  final response = await client.from('categories').insert({
+    'name': name,
+    'type': type,
+    'created_at': now,
+    'updated_at': now,
+    'deleted_at': null,
+  });
+  print(response); // atau print(response.error) jika ingin cek error
+}
+
+Future<List<Categories>> getAllCategory(int type) async {
+  return await categoryService.getAllCategoryRepo(type);
+}
 
   void openDialog() {
     showDialog(context: context, builder: (BuildContext context) {
@@ -23,10 +46,17 @@ class _CategoryPageState extends State<CategoryPage> {
                 color: (isExpanded) ? Colors.red : Colors.green),),
               SizedBox(height: 10,),
                TextFormField(
+                controller: categorynameController,
                 decoration: InputDecoration(border: 
                 OutlineInputBorder(), hintText: "Name"),
               ),
-              ElevatedButton(onPressed: () {}, child: Text("Save")),
+              ElevatedButton(onPressed: () {
+                insert(categorynameController.text, isExpanded ? 2 : 1);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                setState(() {
+                  
+                });
+              }, child: Text("Save")),
               SizedBox(height: 10,)
             ],
           ),
@@ -59,41 +89,7 @@ class _CategoryPageState extends State<CategoryPage> {
         
         ],),
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          elevation: 10,
-          child: ListTile(
-            leading: isExpanded ? Icon(Icons.upload, color: Colors.red) : Icon(Icons.download, color: Colors.green),
-            title: Text("Amal"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-              SizedBox(width: 10,),
-              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-            ],),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          elevation: 10,
-          child: ListTile(
-            leading: isExpanded ? Icon(Icons.upload, color: Colors.red) : Icon(Icons.download, color: Colors.green),
-            title: Text("Makan"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-              SizedBox(width: 10,),
-              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-            ],),
-          ),
-        ),
-      )
-
+           
     ],));
   }
 }

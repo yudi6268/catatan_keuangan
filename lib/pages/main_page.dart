@@ -46,12 +46,12 @@ class _MainPageState extends State<MainPage> {
         lastDate: DateTime.now(),
       )
      :PreferredSize(
+      preferredSize: Size.fromHeight(100),
       child: Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
         child: Text('Categories', style: GoogleFonts.montserratAlternates (fontSize: 20), ),
-      )), 
-      preferredSize: Size.fromHeight(100)),
+      ))),
       body: _children[currentIndex],     
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

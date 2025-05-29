@@ -33,12 +33,12 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8), // Tambahkan padding
-                          child: const Icon(Icons.download, color: Colors.green),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                          ),
+                          ), // Tambahkan padding
+                          child: const Icon(Icons.download, color: Colors.green),
                         ),
                         const SizedBox(width: 15),
                         Column(
@@ -67,13 +67,13 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8), // Tambahkan padding
-                          child: const Icon(Icons.upload, color: Colors.red),
+                          padding: const EdgeInsets.all(8),
                          
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                          ),
+                          ), // Tambahkan padding
+                          child: const Icon(Icons.upload, color: Colors.red),
                         ),
                         const SizedBox(width: 15),
                         Column(
@@ -126,12 +126,12 @@ class _HomePageState extends State<HomePage> {
                 title: Text("Rp25.000"),
                 subtitle: Text("Makan Siang"),
                 leading: Container(
-                              padding: const EdgeInsets.all(8), // Tambahkan padding
-                              child: const Icon(Icons.upload, color: Colors.red),
+                              padding: const EdgeInsets.all(8),
                              
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)),)
+                                borderRadius: BorderRadius.circular(8)), // Tambahkan padding
+                              child: const Icon(Icons.upload, color: Colors.red),)
               ),
             ),
           ),
@@ -149,12 +149,12 @@ class _HomePageState extends State<HomePage> {
                 title: Text("Rp2.500.000"),
                 subtitle: Text("Gaji Bulanan"),
                 leading: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 15), // Tambahkan padding
-                              child: const Icon(Icons.download, color: Colors.green),
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
                              
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)),)
+                                borderRadius: BorderRadius.circular(8)), // Tambahkan padding
+                              child: const Icon(Icons.download, color: Colors.green),)
               ),
             ),
           ),
