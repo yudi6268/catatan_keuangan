@@ -1,6 +1,4 @@
-
-
-class Categories {
+class Category {
   final int id;
   final String name;
   final int type;
@@ -8,7 +6,7 @@ class Categories {
   final DateTime updatedAt;
   final DateTime? deletedAt;
 
-  Categories({
+  Category({
     required this.id,
     required this.name,
     required this.type,
@@ -17,8 +15,8 @@ class Categories {
     this.deletedAt,
   });
 
-  factory Categories.fromMap(Map<String, dynamic> map) {
-    return Categories(
+  factory Category.fromMap(Map<String, dynamic> map) {
+    return Category(
       id: map['id'],
       name: map['name'],
       type: map['type'],
@@ -26,16 +24,5 @@ class Categories {
       updatedAt: DateTime.parse(map['updated_at']),
       deletedAt: map['deleted_at'] != null ? DateTime.tryParse(map['deleted_at']) : null,
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'deleted_at': deletedAt?.toIso8601String(),
-    };
   }
 }

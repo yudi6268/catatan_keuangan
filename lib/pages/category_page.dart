@@ -1,5 +1,4 @@
 import 'package:duitku/models/category.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,13 +14,14 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   bool isExpanded = true;
+  int type = 2; // 1 for Income, 2 for Expense
   final SupabaseClient client = Supabase.instance.client;
   final categoryService = CategoryService();
   TextEditingController categorynameController = TextEditingController();
   
   Future insert(String name, int type) async {
   final now = DateTime.now().toIso8601String();
-  final response = await client.from('categories').insert({
+  final response = await client.from('category').insert({
     'name': name,
     'type': type,
     'created_at': now,
@@ -31,7 +31,7 @@ class _CategoryPageState extends State<CategoryPage> {
   print(response); // atau print(response.error) jika ingin cek error
 }
 
-Future<List<Categories>> getAllCategory(int type) async {
+Future<List<Category>> getAllCategory(int type) async {
   return await categoryService.getAllCategoryRepo(type);
 }
 
@@ -78,6 +78,7 @@ Future<List<Categories>> getAllCategory(int type) async {
           Switch(value: isExpanded, onChanged: (bool value) {
             setState(() {
               isExpanded = value;
+              type = value ? 2 : 1; // 2 for Expense, 1 for Income
             });
           }, 
           inactiveTrackColor: Colors.green[200],
@@ -89,7 +90,32 @@ Future<List<Categories>> getAllCategory(int type) async {
         
         ],),
       ),
-           
+      
+  FutureBuilder<List<Category>>(
+  future: getAllCategory(type),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator(),);
+    } else if (snapshot.hasData) {
+      if (snapshot.data!.isNotEmpty) {
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            final cat = snapshot.data![index];
+            return ListTile(
+              title: Text(cat.name),
+            );
+          },
+        );
+      } else {
+        return Center(child: Text("No data"));
+      }
+    } else {
+      return Center(child: Text("No data"));
+    }
+  }
+)    
     ],));
   }
 }
