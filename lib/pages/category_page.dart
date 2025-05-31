@@ -13,6 +13,7 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  int _refreshKey = 0;
   bool isExpanded = true;
   int type = 2; // 1 for Income, 2 for Expense
   final SupabaseClient client = Supabase.instance.client;
@@ -21,14 +22,16 @@ class _CategoryPageState extends State<CategoryPage> {
   
   Future insert(String name, int type) async {
   final now = DateTime.now().toIso8601String();
-  final response = await client.from('category').insert({
+  await client.from('category').insert({
     'name': name,
     'type': type,
     'created_at': now,
     'updated_at': now,
     'deleted_at': null,
   });
-  print(response); // atau print(response.error) jika ingin cek error
+  setState(() {
+    _refreshKey++; // Trigger FutureBuilder rebuild
+  });
 }
 
 Future<List<Category>> getAllCategory(int type) async {
@@ -53,10 +56,9 @@ Future<List<Category>> getAllCategory(int type) async {
               ElevatedButton(onPressed: () {
                 insert(categorynameController.text, isExpanded ? 2 : 1);
                 Navigator.of(context, rootNavigator: true).pop('dialog');
-                setState(() {
-                  
-                });
-              }, child: Text("Save")),
+                setState(() {});
+                  categorynameController.clear();
+                  }, child: Text("Save")),
               SizedBox(height: 10,)
             ],
           ),
@@ -91,9 +93,11 @@ Future<List<Category>> getAllCategory(int type) async {
         ],),
       ),
       
-  FutureBuilder<List<Category>>(
-  future: getAllCategory(type),
-  builder: (context, snapshot) {
+ Expanded(
+  child: FutureBuilder<List<Category>>(
+    key: ValueKey(_refreshKey),
+    future: getAllCategory(type),
+    builder: (context, snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return Center(child: CircularProgressIndicator(),);
     } else if (snapshot.hasData) {
@@ -102,10 +106,29 @@ Future<List<Category>> getAllCategory(int type) async {
           shrinkWrap: true,
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            final cat = snapshot.data![index];
-            return ListTile(
-              title: Text(cat.name),
-            );
+          return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Card(
+          elevation: 10,
+          child: ListTile(
+              trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+              IconButton(icon: Icon(Icons.delete), onPressed: () {
+              },),
+              SizedBox(width: 10,),
+              IconButton(icon: Icon(Icons.edit), onPressed: () {
+              },)
+            ],),
+            leading: Container(
+              padding: EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8)),
+              child: (isExpanded!) ? Icon(Icons.upload,
+              color: Colors.redAccent) : Icon(Icons.download, color: Colors.greenAccent)),
+            title: Text(snapshot.data![index].name, style: GoogleFonts.montserrat(fontSize: 16),),
+            )));
           },
         );
       } else {
@@ -115,7 +138,9 @@ Future<List<Category>> getAllCategory(int type) async {
       return Center(child: Text("No data"));
     }
   }
-)    
-    ],));
+ )),
+
+],),
+);
   }
 }
