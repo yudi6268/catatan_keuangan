@@ -25,4 +25,15 @@ class Category {
       deletedAt: map['deleted_at'] != null ? DateTime.tryParse(map['deleted_at']) : null,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'deleted_at': deletedAt?.toIso8601String(),
+    };
+  }
 }

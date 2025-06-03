@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
       child: Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-        child: Text('Categories', style: GoogleFonts.montserratAlternates (fontSize: 20), ),
+        child: Text('Category', style: GoogleFonts.montserratAlternates (fontSize: 20), ),
       ))),
       body: _children[currentIndex],     
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
