@@ -40,9 +40,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     activeColor: Colors.red,
                   ),
                   isExpanded
-                      ? Text("Expense")
+                      ? Text("Pengeluaran",
+                          style: GoogleFonts.montserrat(fontSize: 14))
                       : Text(
-                          "Income",
+                          "Pemasukan",
                           style: GoogleFonts.montserrat(fontSize: 14),
                         ),
                 ],
@@ -56,7 +57,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
-                    labelText: "Amount",
+                    labelText: "Jumlah",
                   ),
                 ),
               ),
