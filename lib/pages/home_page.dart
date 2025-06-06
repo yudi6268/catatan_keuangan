@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Income",
+                              "Pemasukan",
                               style: GoogleFonts.montserrat(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Expense",
+                              "Pengeluaran",
                               style: GoogleFonts.montserrat(
                                 color: Colors.white,
                                 fontSize: 12,
