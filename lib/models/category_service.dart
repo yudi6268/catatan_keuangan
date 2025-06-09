@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'category.dart';
 
@@ -9,7 +11,6 @@ class CategoryService {
         .from('category')
         .select()
         .eq('type', type)
-        .filter('deleted_at', 'is', null)
         .order('name', ascending: true);
     return (data as List)
         .map((e) => Category.fromMap(e as Map<String, dynamic>))
@@ -24,7 +25,7 @@ class CategoryService {
       'type': type,
       'created_at': now,
       'updated_at': now,
-      'deleted_at': null,
+      
     });
     print('Insert response: $response');
   } catch (e) {
@@ -34,9 +35,7 @@ class CategoryService {
 
 Future<void> delete(int id) async {
   try {
-    final response = await _client.from('category').update({
-      'deleted_at': DateTime.now().toIso8601String(),
-    }).eq('id', id);
+    final response = await _client.from('category').delete().eq('id', id);
     print('Delete response: $response');
   } catch (e) {
     print('Delete error: $e');

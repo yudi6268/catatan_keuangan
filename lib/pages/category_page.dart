@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/category_service.dart';
@@ -130,10 +132,11 @@ class _CategoryPageState extends State<CategoryPage> {
                     Switch(
                       value: isExpense,
                       onChanged: (val) {
-                        setState(() {});
+                      setState(() {
                         isExpense = val;
                         _refreshKey++;
-                      },
+                      });
+                    },
                       activeColor: Colors.red,
                       inactiveThumbColor: Colors.green,
                       inactiveTrackColor: Colors.green[200],

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:duitku/pages/category_page.dart';
 import 'package:duitku/pages/home_page.dart';
