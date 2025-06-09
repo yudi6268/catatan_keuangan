@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-
+import '../models/category_service.dart';
+import '../models/category.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -11,10 +12,29 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  bool isExpanded = true;
-  List<String> list = ["Makan", "Transport", "Hiburan", "Belanja"];
-  late String dropDownvalue = list.first;
+  bool isExpense = true;
+  List<Category> categories = [];
+  Category? selectedCategory;
   TextEditingController dateController = TextEditingController();
+  final categoryService = CategoryService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+    final data = await categoryService.getAllCategory(isExpense ? 2 : 1);
+    setState(() {
+      categories = data;
+      if (categories.isNotEmpty) {
+        selectedCategory = categories.first;
+      } else {
+        selectedCategory = null;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +49,18 @@ class _TransactionPageState extends State<TransactionPage> {
               Row(
                 children: [
                   Switch(
-                    value: isExpanded,
+                    value: isExpense,
                     onChanged: (bool value) {
                       setState(() {
-                        isExpanded = value;
+                        isExpense = value;
                       });
+                      fetchCategories();
                     },
                     inactiveTrackColor: Colors.green[200],
                     inactiveThumbColor: Colors.green,
                     activeColor: Colors.red,
                   ),
-                  isExpanded
+                  isExpense
                       ? Text("Pengeluaran",
                           style: GoogleFonts.montserrat(fontSize: 14))
                       : Text(
@@ -71,19 +92,20 @@ class _TransactionPageState extends State<TransactionPage> {
               // Dropdown for Categories
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: DropdownButton<String>(
-                  value: dropDownvalue,
+                child: DropdownButton<Category>(
+                  value: selectedCategory,
                   icon: const Icon(Icons.arrow_drop_down),
                   isExpanded: true,
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                  hint: const Text("Pilih kategori"),
+                  items: categories.map((cat) {
+                    return DropdownMenuItem<Category>(
+                      value: cat,
+                      child: Text(cat.name),
                     );
                   }).toList(),
-                  onChanged: (String? newValue) {
+                  onChanged: (Category? newValue) {
                     setState(() {
-                      dropDownvalue = newValue!;
+                      selectedCategory = newValue;
                     });
                   },
                 ),
@@ -93,23 +115,31 @@ class _TransactionPageState extends State<TransactionPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextField(
                   readOnly: true,
-                controller: dateController,
-                decoration: InputDecoration(labelText: "Enter Date"),
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(context: context, 
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2022), lastDate: DateTime(2099));
-                  if (pickedDate != null) {
-                    String formattedDate = DateFormat('dd-MM-y').format(pickedDate);
-                    setState(() {
-                      dateController.text = formattedDate;
-                    });
-                  }
-                }
+                  controller: dateController,
+                  decoration: InputDecoration(labelText: "Enter Date"),
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2022),
+                        lastDate: DateTime(2099));
+                    if (pickedDate != null) {
+                      String formattedDate =
+                          DateFormat('dd-MM-y').format(pickedDate);
+                      setState(() {
+                        dateController.text = formattedDate;
+                      });
+                    }
+                  },
                 ),
               ),
               SizedBox(height: 25),
-              Center(child: ElevatedButton(onPressed: () {}, child: Text("Save"))),
+              Center(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        // TODO: Save transaction
+                      },
+                      child: Text("Save"))),
             ],
           ),
         ),
