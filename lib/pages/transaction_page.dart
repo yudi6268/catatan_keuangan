@@ -3,9 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/category_service.dart';
 import '../models/category.dart';
+import '../models/transaction_service.dart';
+import '../models/transaction.dart';
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  final Transaction? transaction;
+  const TransactionPage({super.key, this.transaction});
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
@@ -16,7 +19,14 @@ class _TransactionPageState extends State<TransactionPage> {
   List<Category> categories = [];
   Category? selectedCategory;
   TextEditingController dateController = TextEditingController();
+
+  // Tambahkan deklarasi controller berikut:
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
   final categoryService = CategoryService();
+  final transactionService = TransactionService();
+  
 
   @override
   void initState() {
@@ -75,12 +85,13 @@ class _TransactionPageState extends State<TransactionPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: "Jumlah",
-                  ),
+                controller: amountController, // <-- tambahkan ini!
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: "Jumlah",
                 ),
+              ),
               ),
 
               SizedBox(height: 25),
@@ -136,11 +147,43 @@ class _TransactionPageState extends State<TransactionPage> {
               SizedBox(height: 25),
               Center(
                   child: ElevatedButton(
-                      onPressed: () {
-                        // TODO: Save transaction
-                      },
-                      child: Text("Save"))),
-            ],
+      onPressed: (
+  amountController.text.isNotEmpty &&
+  selectedCategory != null
+)
+    ? () async {
+        try {
+          if (widget.transaction != null) {
+            // UPDATE
+            await transactionService.update(
+              id: widget.transaction!.id,
+              name: selectedCategory?.name ?? 'Transaksi Baru',
+              categoryId: selectedCategory!.id,
+              transactionCode: '-',
+              amount: double.tryParse(amountController.text) ?? 0.0,
+              type: isExpense ? 2 : 1,
+            );
+          } else {
+            // INSERT
+            await transactionService.insert(
+              name: selectedCategory?.name ?? 'Transaksi Baru',
+              categoryId: selectedCategory!.id,
+              transactionCode: '-',
+              amount: double.tryParse(amountController.text) ?? 0.0,
+              type: isExpense ? 2 : 1,
+            );
+          }
+          Navigator.pop(context, true); // Penting: kirim true ke home_page
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Gagal simpan: $e')),
+          );
+        }
+      }
+    : null,
+  child: Text("Save"),
+),
+              )],
           ),
         ),
       ),
