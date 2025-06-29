@@ -177,14 +177,14 @@ class _HomePageState extends State<HomePage> {
                                       IconButton(
                                         icon: const Icon(Icons.edit),
                                         onPressed: () async {
-                                          final result = await Navigator.push(
+                                        final result = await Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (_) => TransactionPage()),
+                                          MaterialPageRoute(builder: (_) => TransactionPage(transaction: trx)), // <-- kirim trx
                                         );
                                         if (result == true) {
                                           fetchTransactions();
                                         }
-                                        },
+                                      },
                                       ),
                                     ],
                                   ),

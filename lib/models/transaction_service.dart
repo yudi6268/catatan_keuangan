@@ -33,16 +33,18 @@ class TransactionService {
   required int categoryId,
   required String transactionCode,
   required double amount,
-  required int type, // <-- harus ada
+  required int type,
 }) async {
-    final now = DateTime.now().toIso8601String();
-    await _client.from('transaction').update({
-      'name': name,
-      'category_id': categoryId,
-      'amount': amount,
-      'updated_at': now,
-    }).eq('id', id);
-  }
+  final now = DateTime.now().toIso8601String();
+  await _client.from('transaction').update({
+    'name': name,
+    'category_id': categoryId,
+    'transaction_code': transactionCode, // tambahkan ini
+    'amount': amount,
+    'type': type, // tambahkan ini
+    'updated_at': now,
+  }).eq('id', id);
+}
 
  Future<void> delete(int id) async {
   await _client.from('transaction').delete().eq('id', id);
