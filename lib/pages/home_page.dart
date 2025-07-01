@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/transaction_service.dart';
 import '../models/transaction.dart';
 import 'transaction_page.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,9 +47,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 2);
+
     return Scaffold(
-      
-       body: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                "Rp${transactions.where((t) => t.type == 1).fold(0.0, (a, b) => a + b.amount).toStringAsFixed(0)}",
+                                formatter.format(
+                                  transactions.where((t) => t.type == 1).fold(0.0, (a, b) => a + b.amount)
+                                ),
                                 style: GoogleFonts.montserrat(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -124,7 +128,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                "Rp${transactions.where((t) => t.type == 2).fold(0.0, (a, b) => a + b.amount).toStringAsFixed(0)}",
+                                formatter.format(
+                                  transactions.where((t) => t.type == 2).fold(0.0, (a, b) => a + b.amount)
+                                ),
                                 style: GoogleFonts.montserrat(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -177,18 +183,18 @@ class _HomePageState extends State<HomePage> {
                                       IconButton(
                                         icon: const Icon(Icons.edit),
                                         onPressed: () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => TransactionPage(transaction: trx)), // <-- kirim trx
-                                        );
-                                        if (result == true) {
-                                          fetchTransactions();
-                                        }
-                                      },
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (_) => TransactionPage(transaction: trx)),
+                                          );
+                                          if (result == true) {
+                                            fetchTransactions();
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),
-                                  title: Text("Rp${trx.amount.toStringAsFixed(0)}"),
+                                  title: Text(formatter.format(trx.amount)),
                                   subtitle: Text(trx.name),
                                   leading: Container(
                                     padding: const EdgeInsets.all(8),
